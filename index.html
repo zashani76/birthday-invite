@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הזמנה ליום הולדת 🎉</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Rubik+Moonrocks&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral: #FF5D73;
+    --sun: #FFC93C;
+    --turq: #2EC4B6;
+    --grape: #8E5CF7;
+    --blue: #2F80ED;
+    --cream: #FFF7ED;
+    --ink: #2B1B33;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Rubik', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* confetti */
+  .confetti{
+    position: fixed;
+    top: -20px;
+    width: 12px;
+    height: 12px;
+    opacity: .85;
+    z-index: 0;
+    animation: fall linear infinite;
+    pointer-events: none;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(0) rotate(0deg); }
+    100%{ transform: translateY(110vh) rotate(360deg); }
+  }
+
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 22px 90px;
+    text-align: center;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    background: var(--sun);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .12em;
+    padding: 6px 18px;
+    border-radius: 999px;
+    transform: rotate(-3deg);
+    margin-bottom: 22px;
+  }
+
+  h1{
+    font-family: 'Rubik Moonrocks', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 11vw, 4.6rem);
+    line-height: 1.2;
+    color: var(--blue);
+    -webkit-text-stroke: 2px var(--ink);
+    text-shadow: 4px 4px 0 var(--sun);
+    margin-bottom: 18px;
+  }
+
+  .photo-wrap{
+    width: 220px;
+    margin: 6px auto 26px;
+    position: relative;
+  }
+  .photo-glow{
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle, var(--sun) 0%, var(--turq) 45%, transparent 72%);
+    filter: blur(28px);
+    opacity: .55;
+    z-index: 0;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  .photo-blob{
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items:flex-end;
+    justify-content:center;
+    animation: wiggle 5s ease-in-out infinite;
+  }
+  .photo-blob img{
+    width: 100%;
+    height: auto;
+    display: block;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 14%);
+            mask-image: linear-gradient(to top, transparent 0%, #000 14%);
+    filter: drop-shadow(0 10px 14px rgba(43,27,51,.18));
+  }
+  @keyframes wiggle{
+    0%,100%{ transform: rotate(0deg) scale(1); }
+    50%{ transform: rotate(2deg) scale(1.02); }
+  }
+  @keyframes pulse{
+    0%,100%{ opacity: .45; transform: scale(1); }
+    50%{ opacity: .65; transform: scale(1.08); }
+  }
+
+  .subtitle{
+    font-size: clamp(1.05rem, 4vw, 1.4rem);
+    color: var(--grape);
+    font-weight: 800;
+    margin-bottom: 34px;
+  }
+
+  .intro{
+    color: #5b4a63;
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 44px;
+    line-height: 1.7;
+  }
+
+  .details{
+    display:grid;
+    gap: 18px;
+    margin-bottom: 44px;
+  }
+
+  .card{
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    padding: 18px 22px;
+    display:flex;
+    align-items:center;
+    gap: 16px;
+    text-align: right;
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: transform .2s ease;
+  }
+  .card:nth-child(1){ transform: rotate(-1.2deg); }
+  .card:nth-child(2){ transform: rotate(1deg); }
+  .card:nth-child(3){ transform: rotate(-0.8deg); }
+  .card:hover{ transform: translateY(-3px) rotate(0deg); }
+
+  .card .icon{ font-size: 1.9rem; flex-shrink:0; }
+  .card .label{ font-size: .78rem; color: #8a7891; letter-spacing:.06em; font-weight:600; }
+  .card .value{ font-size: 1.15rem; font-weight: 800; }
+
+  /* guestbook */
+  .wishwall{
+    margin-top: 70px;
+    text-align: right;
+  }
+  .wishwall h2{
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
+    color: var(--turq);
+    -webkit-text-stroke: 1.4px var(--ink);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .wish-form{
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 6px 6px 0 var(--ink);
+    margin-bottom: 32px;
+    display: grid;
+    gap: 12px;
+  }
+  .wish-form input, .wish-form textarea{
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+    padding: 12px 14px;
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    background: var(--cream);
+    resize: vertical;
+    color: var(--ink);
+  }
+  .wish-form textarea{ min-height: 80px; }
+  .wish-form button{
+    justify-self: start;
+    background: var(--grape);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 12px 30px;
+    border-radius: 999px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .wish-form button:hover{ transform: translate(-2px,-2px); }
+  .wish-form button:disabled{ opacity:.6; cursor:not-allowed; }
+
+  .wish-status{ font-size: .85rem; color: var(--grape); min-height: 1.2em; text-align:center; }
+
+  .wish-list{
+    display: grid;
+    gap: 16px;
+  }
+  .wish-note{
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 2.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    font-size: .98rem;
+    line-height: 1.5;
+  }
+  .wish-note .who{
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .wish-note:nth-child(4n+1){ background: #FFE8A3; transform: rotate(-1.4deg); }
+  .wish-note:nth-child(4n+2){ background: #C9F4EF; transform: rotate(1.1deg); }
+  .wish-note:nth-child(4n+3){ background: #FFD3DB; transform: rotate(-0.7deg); }
+  .wish-note:nth-child(4n+4){ background: #E4D8FF; transform: rotate(1.6deg); }
+
+  .empty-note{ text-align:center; color:#8a7891; font-size:.9rem; }
+
+  footer{
+    margin-top: 60px;
+    color: #8a7891;
+    font-size: .85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .confetti, .photo-blob{ animation: none !important; }
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline: 3px solid var(--grape);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+  <div id="confetti-container"></div>
+
+  <div class="wrap">
+    <span class="eyebrow">אתם מוזמנים 🎈</span>
+    <h1>למסיבת<br>יום הולדת!</h1>
+
+    <div class="photo-wrap">
+      <div class="photo-glow"></div>
+      <div class="photo-blob">
+        <img src="photo.png" alt="התמונה שלי">
+      </div>
+    </div>
+
+    <div class="subtitle">בואו לחגוג, לצחוק ולהנות איתי</div>
+
+    <p class="intro">
+      יום הולדת, סיבה למסיבה. הצטרפו לערב מלא צחוקים, אוכל טעים,
+      מוזיקה טובה ואנשים שאני אוהב.
+    </p>
+
+    <div class="details">
+      <div class="card">
+        <span class="icon">📅</span>
+        <div>
+          <div class="label">תאריך</div>
+          <div class="value">יום שישי, 04.09.2026</div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="icon">🚪</span>
+        <div>
+          <div class="label">שעה — פתיחת דלתות</div>
+          <div class="value">19:00</div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="icon">📍</span>
+        <div>
+          <div class="label">מיקום</div>
+          <div class="value">גן יבנה</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wishwall">
+      <h2>קיר הברכות 💌</h2>
+
+      <form class="wish-form" id="wish-form">
+        <input type="text" id="wish-name" placeholder="השם שלך" maxlength="40" required>
+        <textarea id="wish-message" placeholder="כתבו לי ברכה..." maxlength="300" required></textarea>
+        <button type="submit" id="wish-submit">שלחו ברכה 💬</button>
+        <div class="wish-status" id="wish-status"></div>
+      </form>
+
+      <div class="wish-list" id="wish-list">
+        <p class="empty-note">טוען ברכות...</p>
+      </div>
+    </div>
+
+    <footer>נראה אתכם שם ✨</footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, limit
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwNqg9PAEGsWTI9ZgRM6zy1T6ZognA4TY",
+      authDomain: "birthday-invitation-7994e.firebaseapp.com",
+      projectId: "birthday-invitation-7994e",
+      storageBucket: "birthday-invitation-7994e.firebasestorage.app",
+      messagingSenderId: "158991975382",
+      appId: "1:158991975382:web:4f58d683f8dc1b595f5a77"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const wishesRef = collection(db, "wishes");
+
+    const form = document.getElementById("wish-form");
+    const nameInput = document.getElementById("wish-name");
+    const msgInput = document.getElementById("wish-message");
+    const submitBtn = document.getElementById("wish-submit");
+    const statusEl = document.getElementById("wish-status");
+    const listEl = document.getElementById("wish-list");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const message = msgInput.value.trim();
+      if (!name || !message) return;
+
+      submitBtn.disabled = true;
+      statusEl.textContent = "שולח...";
+      try {
+        await addDoc(wishesRef, {
+          name,
+          message,
+          createdAt: serverTimestamp()
+        });
+        nameInput.value = "";
+        msgInput.value = "";
+        statusEl.textContent = "הברכה נשלחה! 🎉";
+        setTimeout(() => { statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "משהו השתבש, נסו שוב.";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    const q = query(wishesRef, orderBy("createdAt", "desc"), limit(100));
+    onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        listEl.innerHTML = '<p class="empty-note">עדיין אין ברכות — תהיו הראשונים! 🎈</p>';
+        return;
+      }
+      listEl.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const note = document.createElement("div");
+        note.className = "wish-note";
+
+        const who = document.createElement("div");
+        who.className = "who";
+        who.textContent = data.name || "אנונימי";
+
+        const text = document.createElement("div");
+        text.textContent = data.message || "";
+
+        note.appendChild(who);
+        note.appendChild(text);
+        listEl.appendChild(note);
+      });
+    }, (err) => {
+      console.error(err);
+      listEl.innerHTML = '<p class="empty-note">לא הצלחנו לטעון ברכות כרגע.</p>';
+    });
+  </script>
+
+  <script>
+    // confetti generator
+    const colors = ['#FF5D73', '#FFC93C', '#2EC4B6', '#8E5CF7'];
+    const shapes = ['50%', '2px'];
+    const container = document.getElementById('confetti-container');
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+      el.style.animationDuration = (6 + Math.random() * 6) + 's';
+      el.style.animationDelay = (Math.random() * 8) + 's';
+      container.appendChild(el);
+    }
+  </script>
+
+</body>
+</html>
