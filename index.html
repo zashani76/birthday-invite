@@ -28,20 +28,52 @@
     position: relative;
   }
 
-  /* confetti */
+  /* confetti + balloons */
+  .balloon-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 900px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    transition: filter .15s linear;
+  }
+  .confetti-container{
+    position: absolute;
+    top: 900px;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    transition: filter .15s linear;
+  }
+  .balloon{
+    position: absolute;
+    top: -60px;
+    font-size: 2.2rem;
+    line-height: 1;
+    opacity: .9;
+    animation: fall-balloon linear infinite;
+  }
+  @keyframes fall-balloon{
+    0%{ transform: translateY(0) rotate(0deg); }
+    100%{ transform: translateY(960px) rotate(12deg); }
+  }
   .confetti{
-    position: fixed;
+    position: absolute;
     top: -20px;
     width: 12px;
     height: 12px;
     opacity: .85;
-    z-index: 0;
     animation: fall linear infinite;
-    pointer-events: none;
   }
   @keyframes fall{
     0%{ transform: translateY(0) rotate(0deg); }
-    100%{ transform: translateY(110vh) rotate(360deg); }
+    100%{ transform: translateY(1400px) rotate(360deg); }
   }
 
   .wrap{
@@ -350,7 +382,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .confetti, .photo-blob{ animation: none !important; }
+    .confetti, .balloon, .photo-blob{ animation: none !important; }
   }
 
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
@@ -361,7 +393,8 @@
 </head>
 <body>
 
-  <div id="confetti-container"></div>
+  <div id="balloon-container" class="balloon-container"></div>
+  <div id="confetti-container" class="confetti-container"></div>
 
   <div class="wrap">
     <span class="eyebrow">אתם מוזמנים 🎈</span>
@@ -592,10 +625,26 @@
   </script>
 
   <script>
-    // confetti generator
+    // balloons at the top of the page
+    const balloonEmojis = ['🎈', '🎈', '🎈'];
+    const balloonColors = ['#FF5D73', '#FFC93C', '#2EC4B6', '#8E5CF7', '#2F80ED'];
+    const balloonContainer = document.getElementById('balloon-container');
+    for (let i = 0; i < 10; i++) {
+      const el = document.createElement('div');
+      el.className = 'balloon';
+      el.textContent = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+      el.style.left = Math.random() * 92 + 'vw';
+      el.style.color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+      el.style.animationDuration = (7 + Math.random() * 6) + 's';
+      el.style.animationDelay = (Math.random() * 8) + 's';
+      el.style.fontSize = (1.6 + Math.random() * 1.2) + 'rem';
+      balloonContainer.appendChild(el);
+    }
+
+    // confetti further down the page
     const colors = ['#FF5D73', '#FFC93C', '#2EC4B6', '#8E5CF7'];
     const shapes = ['50%', '2px'];
-    const container = document.getElementById('confetti-container');
+    const confettiContainer = document.getElementById('confetti-container');
     for (let i = 0; i < 30; i++) {
       const el = document.createElement('div');
       el.className = 'confetti';
@@ -604,8 +653,22 @@
       el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
       el.style.animationDuration = (6 + Math.random() * 6) + 's';
       el.style.animationDelay = (Math.random() * 8) + 's';
-      container.appendChild(el);
+      confettiContainer.appendChild(el);
     }
+
+    // subtle hue shift on scroll, affecting balloons + confetti + glow
+    const photoGlowEl = document.querySelector('.photo-glow');
+    function updateHueOnScroll(){
+      const scrollableHeight = document.body.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      const hue = Math.round(progress * 100); // subtle: 0-100deg rotation
+      const filterVal = `hue-rotate(${hue}deg)`;
+      balloonContainer.style.filter = filterVal;
+      confettiContainer.style.filter = filterVal;
+      if (photoGlowEl) photoGlowEl.style.filter = `blur(28px) hue-rotate(${hue}deg)`;
+    }
+    window.addEventListener('scroll', updateHueOnScroll, { passive: true });
+    updateHueOnScroll();
   </script>
 
 </body>
