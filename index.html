@@ -83,7 +83,26 @@
     position: relative;
     cursor: pointer;
   }
-  .speech-bubble{
+  .click-me{
+    position: absolute;
+    bottom: -6px;
+    left: -8px;
+    background: var(--sun);
+    color: var(--ink);
+    font-size: .72rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    z-index: 2;
+    animation: bounce-hint 1.8s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  @keyframes bounce-hint{
+    0%, 100%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-6px) rotate(-4deg); }
+  }
     position: absolute;
     top: -6px;
     right: -30px;
@@ -349,6 +368,7 @@
     <h1>למסיבת<br>יום הולדת!</h1>
 
     <div class="photo-wrap" id="photo-wrap">
+      <span class="click-me" id="click-me">לחצו עליי יותר מפעם 👆</span>
       <div class="speech-bubble" id="speech-bubble">איזה כיף שאתם כאן</div>
       <div class="photo-glow"></div>
       <div class="photo-blob">
@@ -547,10 +567,23 @@
     // speech bubble on photo click
     const photoWrap = document.getElementById('photo-wrap');
     const speechBubble = document.getElementById('speech-bubble');
+    const clickMeLabel = document.getElementById('click-me');
     let bubbleTimeout;
 
+    const partyLines = [
+      "איזה כיף שאתם כאן 🤝",
+      "מחכה כבר לראות אותכם 🫶",
+      "יאאאא איך אני מתרגש 🤩",
+      "שיחקתם אותה חברים 🥳",
+      "אוטוטו זה קורה . . . ⏳",
+      "תודה שאתם באים לחגוג איתי 💙"
+    ];
+
     photoWrap.addEventListener('click', () => {
+      const randomLine = partyLines[Math.floor(Math.random() * partyLines.length)];
+      speechBubble.textContent = randomLine;
       speechBubble.classList.add('show');
+
       clearTimeout(bubbleTimeout);
       bubbleTimeout = setTimeout(() => {
         speechBubble.classList.remove('show');
