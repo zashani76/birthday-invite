@@ -131,6 +131,47 @@
     line-height: 1.7;
   }
 
+  .countdown{
+    margin-bottom: 40px;
+  }
+  .countdown-label{
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--grape);
+    letter-spacing: .08em;
+    margin-bottom: 14px;
+  }
+  .countdown-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .countdown-box{
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    padding: 12px 4px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .countdown-box:nth-child(1){ background: #FFE8A3; }
+  .countdown-box:nth-child(2){ background: #C9F4EF; }
+  .countdown-box:nth-child(3){ background: #FFD3DB; }
+  .countdown-box:nth-child(4){ background: #E4D8FF; }
+  .countdown-num{
+    font-size: clamp(1.4rem, 6vw, 2rem);
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .countdown-unit{
+    font-size: .68rem;
+    color: #5b4a63;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
   .details{
     display:grid;
     gap: 18px;
@@ -273,6 +314,27 @@
       מוזיקה טובה ואנשים שאני אוהב.
     </p>
 
+    <div class="countdown" id="countdown">
+      <div class="countdown-grid">
+        <div class="countdown-box">
+          <div class="countdown-num" id="cd-days">--</div>
+          <div class="countdown-unit">ימים</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-num" id="cd-hours">--</div>
+          <div class="countdown-unit">שעות</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-num" id="cd-minutes">--</div>
+          <div class="countdown-unit">דקות</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-num" id="cd-seconds">--</div>
+          <div class="countdown-unit">שניות</div>
+        </div>
+      </div>
+    </div>
+
     <div class="details">
       <div class="card">
         <span class="icon">📅</span>
@@ -394,6 +456,42 @@
       console.error(err);
       listEl.innerHTML = '<p class="empty-note">לא הצלחנו לטעון ברכות כרגע.</p>';
     });
+  </script>
+
+  <script>
+    // countdown timer — party starts 04.09.2026 19:00 Israel time (UTC+3 in September)
+    const partyDate = new Date("2026-09-04T19:00:00+03:00").getTime();
+    const cdDays = document.getElementById('cd-days');
+    const cdHours = document.getElementById('cd-hours');
+    const cdMinutes = document.getElementById('cd-minutes');
+    const cdSeconds = document.getElementById('cd-seconds');
+
+    function updateCountdown(){
+      const now = Date.now();
+      const diff = partyDate - now;
+
+      if (diff <= 0) {
+        cdDays.textContent = '0';
+        cdHours.textContent = '0';
+        cdMinutes.textContent = '0';
+        cdSeconds.textContent = '0';
+        clearInterval(countdownInterval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      cdDays.textContent = days;
+      cdHours.textContent = hours;
+      cdMinutes.textContent = minutes;
+      cdSeconds.textContent = seconds;
+    }
+
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
   </script>
 
   <script>
