@@ -81,6 +81,54 @@
     width: 220px;
     margin: 6px auto 26px;
     position: relative;
+    cursor: pointer;
+  }
+  .speech-bubble{
+    position: absolute;
+    top: -6px;
+    right: -30px;
+    max-width: 190px;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    padding: 10px 16px;
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    z-index: 3;
+    opacity: 0;
+    transform: scale(0.4) translateY(10px);
+    transform-origin: bottom left;
+    transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+  .speech-bubble.show{
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .speech-bubble::after{
+    content: "";
+    position: absolute;
+    bottom: -14px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 14px solid var(--ink);
+  }
+  .speech-bubble::before{
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 32px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #fff;
+    z-index: 1;
   }
   .photo-glow{
     position: absolute;
@@ -300,7 +348,8 @@
     <span class="eyebrow">אתם מוזמנים 🎈</span>
     <h1>למסיבת<br>יום הולדת!</h1>
 
-    <div class="photo-wrap">
+    <div class="photo-wrap" id="photo-wrap">
+      <div class="speech-bubble" id="speech-bubble">איזה כיף שאתם כאן</div>
       <div class="photo-glow"></div>
       <div class="photo-blob">
         <img src="photo.png" alt="התמונה שלי">
@@ -492,6 +541,21 @@
 
     updateCountdown();
     const countdownInterval = setInterval(updateCountdown, 1000);
+  </script>
+
+  <script>
+    // speech bubble on photo click
+    const photoWrap = document.getElementById('photo-wrap');
+    const speechBubble = document.getElementById('speech-bubble');
+    let bubbleTimeout;
+
+    photoWrap.addEventListener('click', () => {
+      speechBubble.classList.add('show');
+      clearTimeout(bubbleTimeout);
+      bubbleTimeout = setTimeout(() => {
+        speechBubble.classList.remove('show');
+      }, 2800);
+    });
   </script>
 
   <script>
