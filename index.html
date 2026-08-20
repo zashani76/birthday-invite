@@ -447,6 +447,47 @@
     100%{ transform: translate(var(--px), var(--py)) scale(.3); opacity: 0; }
   }
 
+  .shake-hint{
+    margin-top: 44px;
+    text-align: center;
+    font-size: .9rem;
+    color: #8a7891;
+  }
+  .shake-enable-btn{
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--turq);
+    color: #fff;
+    font-weight: 800;
+    font-size: .9rem;
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: 3px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+  }
+  .shake-enable-btn:hover{ transform: translate(-1px,-1px); }
+
+  .shake-burst-container{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+  .shake-piece{
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    animation: shake-burst 1.6s ease-out forwards;
+  }
+  @keyframes shake-burst{
+    0%{ transform: translate(-50%,-50%) rotate(0deg); opacity: 1; }
+    100%{ transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+  }
+
   footer{
     margin-top: 60px;
     color: #8a7891;
@@ -553,6 +594,12 @@
       <div class="game-hint">לחצו על הבלונים לפני שהם בורחים למעלה</div>
       <div class="game-score">בלונים שפוצצתם: <span id="pop-score">0</span></div>
       <div class="game-stage" id="game-stage"></div>
+    </div>
+
+    <div class="shake-hint" id="shake-hint">
+      📳 נערו את הטלפון בשביל קונפטי!
+      <br>
+      <button class="shake-enable-btn" id="shake-enable-btn" style="display:none;">הפעילו את החיישן</button>
     </div>
 
     <footer>נראה אתכם שם ✨</footer>
@@ -701,6 +748,76 @@
         speechBubble.classList.remove('show');
       }, 2800);
     });
+  </script>
+
+  <script>
+    // shake-to-confetti
+    const shakeColors = ['#FF5D73', '#FFC93C', '#2EC4B6', '#8E5CF7', '#2F80ED'];
+    let lastShakeTime = 0;
+
+    function bigConfettiBurst(){
+      const now = Date.now();
+      if (now - lastShakeTime < 1800) return; // cooldown
+      lastShakeTime = now;
+
+      const burstContainer = document.createElement('div');
+      burstContainer.className = 'shake-burst-container';
+      document.body.appendChild(burstContainer);
+
+      for (let i = 0; i < 90; i++){
+        const piece = document.createElement('div');
+        piece.className = 'shake-piece';
+        piece.style.background = shakeColors[Math.floor(Math.random() * shakeColors.length)];
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 120 + Math.random() * (window.innerWidth * 0.55);
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist + 120; // extra downward drift for gravity feel
+        piece.style.setProperty('--dx', dx + 'px');
+        piece.style.setProperty('--dy', dy + 'px');
+        piece.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+        piece.style.animationDelay = (Math.random() * 0.15) + 's';
+        burstContainer.appendChild(piece);
+      }
+
+      setTimeout(() => burstContainer.remove(), 2000);
+    }
+
+    let lastAccel = null;
+    const SHAKE_THRESHOLD = 18;
+
+    function handleMotion(event){
+      const acc = event.accelerationIncludingGravity || event.acceleration;
+      if (!acc) return;
+      if (lastAccel){
+        const delta = Math.abs(acc.x - lastAccel.x) + Math.abs(acc.y - lastAccel.y) + Math.abs(acc.z - lastAccel.z);
+        if (delta > SHAKE_THRESHOLD){
+          bigConfettiBurst();
+        }
+      }
+      lastAccel = { x: acc.x, y: acc.y, z: acc.z };
+    }
+
+    const shakeHint = document.getElementById('shake-hint');
+    const shakeEnableBtn = document.getElementById('shake-enable-btn');
+
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function'){
+      // iOS 13+: needs an explicit permission request from a user gesture
+      shakeEnableBtn.style.display = 'inline-block';
+      shakeEnableBtn.addEventListener('click', () => {
+        DeviceMotionEvent.requestPermission().then(state => {
+          if (state === 'granted'){
+            window.addEventListener('devicemotion', handleMotion);
+            shakeEnableBtn.style.display = 'none';
+          }
+        }).catch(() => {});
+      });
+    } else if (typeof window.DeviceMotionEvent !== 'undefined'){
+      // Android and other browsers: no permission prompt needed
+      window.addEventListener('devicemotion', handleMotion);
+    } else {
+      shakeHint.style.display = 'none';
+    }
   </script>
 
   <script>
